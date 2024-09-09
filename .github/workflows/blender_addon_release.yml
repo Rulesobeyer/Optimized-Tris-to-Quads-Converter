@@ -1,35 +1,31 @@
-runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install zipfile36
+name: Build Blender Addon
 
-    - name: Build addon
-      run: |
-      mkdir -p build/OptimizedTrisToQuadsConverter
-      cp -r * build/OptimizedTrisToQuadsConverter/ || true
-      cd build
-      zip -r ../Optimized-Tris-to-Quads-Converter.zip OptimizedTrisToQuadsConverter
-      
-    - name: Create Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        VERSION=${{ github.ref_name }}
-        if [ "$VERSION" == "" ]; then
-          VERSION=${{ github.event.inputs.version }}
-        fi
-        gh release create $VERSION \
-          --title "Release $VERSION" \
-          --notes "Release $VERSION" \
-          Optimized-Tris-to-Quads-Converter.zip
+on:
+  workflow_dispatch: # Allows manual trigger of the action
+
+jobs:
+  build-addon:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create addon folder structure
+        run: |
+          ADDON_NAME="Optimized-Tris-to-Quads-Converter"
+          mkdir -p $ADDON_NAME
+          
+          # Copy all add-on files from the root directory to the folder
+          cp -r * $ADDON_NAME/
+          
+      - name: Archive the addon for release
+        run: |
+          ADDON_NAME="Optimized-Tris-to-Quads-Converter"
+          zip -r $ADDON_NAME.zip $ADDON_NAME
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: blender-addon
+          path: Optimized-Tris-to-Quads-Converter.zip

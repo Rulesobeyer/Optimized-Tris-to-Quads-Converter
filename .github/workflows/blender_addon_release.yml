@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., v1.2.1)'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   build:
@@ -34,7 +40,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release create ${{ github.ref_name }} \
-          --title "Release ${{ github.ref_name }}" \
-          --notes "Release ${{ github.ref_name }}" \
+        VERSION=${{ github.ref_name }}
+        if [ "$VERSION" == "" ]; then
+          VERSION=${{ github.event.inputs.version }}
+        fi
+        gh release create $VERSION \
+          --title "Release $VERSION" \
+          --notes "Release $VERSION" \
           Optimized-Tris-to-Quads-Converter.zip

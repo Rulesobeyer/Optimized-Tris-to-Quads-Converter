@@ -31,10 +31,11 @@ jobs:
 
     - name: Build addon
       run: |
-        mkdir build
-        cp -r * build/ || true
+        ADDON_NAME="Optimized-Tris-to-Quads-Converter"
+        mkdir -p build/$ADDON_NAME
+        cp -r * build/$ADDON_NAME/ || true
         cd build
-        zip -r ../Optimized-Tris-to-Quads-Converter.zip *
+        zip -r ../$ADDON_NAME.zip $ADDON_NAME
       
     - name: Create Release
       env:

@@ -1,46 +1,51 @@
-name: Blender Addon Release
+name: Build and Release Blender Addon
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number (e.g., v1.2.1)'
+        description: 'Version number for release'
         required: true
-        default: 'v1.0.0'
+        default: ''
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
     
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install zipfile36
+
     - name: Build addon
       run: |
-        ADDON_NAME="Optimized-Tris-to-Quads-Converter"
-        mkdir -p build/$ADDON_NAME
-        cp -r * build/$ADDON_NAME/ || true
+        mkdir -p build/OptimizedTrisToQuadsConverter
+        cp -r * build/OptimizedTrisToQuadsConverter/ || true
         cd build
-        zip -r ../$ADDON_NAME.zip $ADDON_NAME
-      
+        zip -r ../Optimized-Tris-to-Quads-Converter.zip OptimizedTrisToQuadsConverter
+
     - name: Create Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        VERSION="${{ github.ref_name }}"
+        VERSION=${{ github.ref_name }}
         if [ "$VERSION" == "" ]; then
-          VERSION="${{ github.event.inputs.version }}"
+          VERSION=${{ github.event.inputs.version }}
         fi
-        gh release create "$VERSION" \
+        gh release create $VERSION \
           --title "Release $VERSION" \
           --notes "Release $VERSION" \
           Optimized-Tris-to-Quads-Converter.zip

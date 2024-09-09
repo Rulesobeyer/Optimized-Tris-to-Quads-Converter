@@ -37,4 +37,8 @@ jobs:
         gh release create ${{ github.ref_name }} \
           --title "Release ${{ github.ref_name }}" \
           --notes "Release ${{ github.ref_name }}" \
+<<<<<<< HEAD
           Optimized-Tris-to-Quads-Converter.zip
+=======
+          Optimized-Tris-to-Quads-Converter.zip
+>>>>>>> 4db28b4d0eef17cc0ab4cd5a83dab34d0885ed3d

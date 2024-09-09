@@ -1,27 +1,11 @@
-name: Build and Release Blender Addon
-
-on:
-  push:
-    tags:
-      - 'v*.*.*'
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version number for release'
-        required: true
-        default: ''
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
+runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-    - uses: actions/checkout@v4 # Updated to use Node.js 20 compatible version
+    - uses: actions/checkout@v3
     
     - name: Set up Python
-      uses: actions/setup-python@v5 # Updated to use Node.js 20 compatible version
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
     
@@ -32,11 +16,11 @@ jobs:
 
     - name: Build addon
       run: |
-        mkdir -p build/OptimizedTrisToQuadsConverter
-        cp -r * build/OptimizedTrisToQuadsConverter/ || true
-        cd build
-        zip -r ../Optimized-Tris-to-Quads-Converter.zip OptimizedTrisToQuadsConverter
-
+      mkdir -p build/OptimizedTrisToQuadsConverter
+      cp -r * build/OptimizedTrisToQuadsConverter/ || true
+      cd build
+      zip -r ../Optimized-Tris-to-Quads-Converter.zip OptimizedTrisToQuadsConverter
+      
     - name: Create Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

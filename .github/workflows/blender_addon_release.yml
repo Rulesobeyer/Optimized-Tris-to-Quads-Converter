@@ -9,20 +9,30 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Updated to ensure it uses Node 20
+        uses: actions/checkout@v4
+
+      - name: List directory contents for debugging
+        run: |
+          echo "Listing root directory contents..."
+          ls -la
 
       - name: Create addon folder structure
         run: |
           ADDON_NAME="Optimized-Tris-to-Quads-Converter"
           mkdir -p $ADDON_NAME
           
-          # Copy all add-on files from the root directory to the folder
-          cp -r * $ADDON_NAME/
+          echo "Copying files into $ADDON_NAME"
+          # Copy all add-on files from the root directory to the folder, excluding the .git and workflow directories
+          rsync -av --exclude=".git" --exclude=".github" --exclude="$ADDON_NAME" . $ADDON_NAME/
+          
+          echo "Listing $ADDON_NAME contents..."
+          ls -la $ADDON_NAME
           
       - name: Archive the addon for release
         run: |
           ADDON_NAME="Optimized-Tris-to-Quads-Converter"
           zip -r $ADDON_NAME.zip $ADDON_NAME
+          echo "Add-on zipped: $ADDON_NAME.zip"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3

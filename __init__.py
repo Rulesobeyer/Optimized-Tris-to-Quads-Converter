@@ -7,7 +7,7 @@ from bpy.types import Operator, AddonPreferences
 bl_info = {
     "name": "Optimized Tris to Quads Converter",
     "author": "Rulesobeyer (https://github.com/Rulesobeyer/)",
-    "version": (1, 2),
+    "version": (1, 2, 1),
     "blender": (4, 0, 0),
     "support": "COMMUNITY",
     "category": "Mesh",

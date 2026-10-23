@@ -100,7 +100,7 @@ class TRISQUADS_OT_install_pulp(Operator):
                     "--target", modules_path,
                     "--upgrade",
                     "--no-user",  # Don't use user site-packages
-                    "pulp"
+                    "pulp==3.3.2"
                 ],
                 capture_output=True,
                 text=True
